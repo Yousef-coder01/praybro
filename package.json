@@ -1,0 +1,20 @@
+{
+  "name": "discord-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "concurrently \"nodemon --env-file=.env index.js\" \"nodemon --env-file=.env deploy-commands.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "nodemon": "^3.1.14"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.4"
+  }
+}
