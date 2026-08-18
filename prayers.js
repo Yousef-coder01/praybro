@@ -1,3 +1,6 @@
+const { EmbedBuilder} = require('discord.js');
+
+
 const getPrayerTimes = async (city,country) => {
 
     city = fullNameFormmater(city);
@@ -6,7 +9,9 @@ const getPrayerTimes = async (city,country) => {
     const response = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=${city}&country=${country}&method=4`);
     const data = await response.json();
     return {timings: Object.entries(data.data.timings),
-            timezone: data.data.meta.timezone
+            timezone: data.data.meta.timezone,
+            city,
+            country
     };
 };
 
@@ -62,6 +67,14 @@ const getPrayerTimingsInMin = async (city,country) =>{
 const nextPrayerHandler = async (city,country) => {
 
  const data =  await getPrayerTimingsInMin(city,country);
+ const prayers = await getPrayerTimes(city,country);
+ const prayerTimings = prayers.timings;
+ city = prayers.city
+ country = prayers.country;
+
+
+
+
 
   const formatter = new Intl.DateTimeFormat('en-US', {
         timeZone: data.timezone,
@@ -84,29 +97,53 @@ const nextPrayerHandler = async (city,country) => {
 
     const prayerTimingsInMin = data.timeInMin;
 
+    const embed = new EmbedBuilder();
+    
 switch(true){
 
     case prayerTimingsInMin[0] > timeInMin :
-        return 'next prayer is Fajr';
-        break;
+        return embed.setTitle('Next Prayer').addFields({name:`🌄 ${prayerTimings[0][0]}`, value:`⏰ ${prayerTimings[0][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0x37589E);
     case prayerTimingsInMin[2] > timeInMin :
-        return 'next prayer is Dhuhur';
+        return  embed.setTitle('Next Prayer').addFields({name:`☀️ ${prayerTimings[2][0]}`, value:`⏰ ${prayerTimings[2][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0xFFC938);
         break;
     case prayerTimingsInMin[3]  > timeInMin :
-        return 'next prayer is Asr';
+        return  embed.setTitle('Next Prayer').addFields({name:`☀️ ${prayerTimings[3][0]}`, value:`⏰ ${prayerTimings[3][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0xFFC938);
         break;
     case prayerTimingsInMin[5] > timeInMin :
-        return 'next prayer is Maghrib';
+        return  embed.setTitle('Next Prayer').addFields({name:`🌆 ${prayerTimings[5][0]}`, value:`⏰ ${prayerTimings[5][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0xA13251);     
         break;
     case prayerTimingsInMin[6]  > timeInMin :
-        return 'next prayer is Isha';
+        return  embed.setTitle('Next Prayer').addFields({name:`🌃 ${prayerTimings[6][0]}`, value:`⏰ ${prayerTimings[6][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0x22047D);;
         break;
     default:
-        return 'next prayer is Fajr next day';
-}
+        return embed.setTitle('Next Prayer').addFields({name:`🌄 ${prayerTimings[0][0]- tommorow}`, value:`⏰ ${prayerTimings[0][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0x37589E);;
 
 
 }
+}
 
-module.exports = {getPrayerTime,getPrayerTimes,getPrayerTimingsInMin,nextPrayerHandler};
 
+const prayerTimes = async (city,country) =>{
+const ptimings = await getPrayerTimes(city,country);
+ timings = ptimings.timings;
+ timings.splice(7,4);
+
+const embed = new EmbedBuilder()
+    .setTitle('Prayer Times')
+    .setDescription(`📍${ptimings.city}, ${ptimings.country}\n`)
+    .addFields(
+        { name: '🌅 Fajr', value: timings[0][1], inline: false },
+        { name: '☀️ Dhuhr', value: timings[2][1], inline: false },
+        { name: '🌤️ Asr', value: timings[3][1], inline: false },
+        { name: '🌇 Maghrib', value: timings[5][1], inline: false },
+        { name: '🌙 Isha', value: timings[6][1], inline: false }
+    )
+    .setTimestamp();
+
+    return embed;
+}
+
+
+module.exports = {getPrayerTimes,getPrayerTime,getPrayerTimingsInMin,nextPrayerHandler,prayerTimes};
+
+const embed = new EmbedBuilder().set

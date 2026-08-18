@@ -2,6 +2,7 @@
   "name": "discord-bot",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"nodemon --env-file=.env index.js\" \"nodemon --env-file=.env deploy-commands.js\""
