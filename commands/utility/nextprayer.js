@@ -3,7 +3,7 @@ const{nextPrayerHandler} = require('../../prayers.js');
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-	data: new SlashCommandBuilder().setName('nextprayer').setDescription('return next prayer'),
+	data: new SlashCommandBuilder().setName('nextprayer').setDescription('provides next prayer'),
 	async execute(interaction) {
 		const userId = interaction.user.id;
 		try{

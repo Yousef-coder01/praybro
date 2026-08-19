@@ -18,6 +18,7 @@ for (const folder of commandFolders) {
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
+		console.log(`Deploying command: ${command.data.name}`);
 		if ('data' in command && 'execute' in command) {
 			commands.push(command.data.toJSON());
 		} else {
@@ -38,6 +39,7 @@ const rest = new REST().setToken(token);
 		const data = await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands });
 
 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+		
 	} catch (error) {
 		// And of course, make sure you catch and log any errors!
 		console.error(error);

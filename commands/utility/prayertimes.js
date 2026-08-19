@@ -14,7 +14,7 @@ module.exports = {
         const user = users.find(user => user.userId === userId);
 
 		if(user){
-			await interaction.reply({ embeds : [await prayerTimes(user.city,user.country)]});
+			await interaction.reply({ embeds: [await prayerTimes(user.city,user.country)]});
 		}
 		else{
 			await interaction.reply('User not found. Please set a country and city to get next prayer');

@@ -20,4 +20,3 @@ If you need to access external files, packages, etc.,
 you should require() them at the top of the file.
 */
 
-console.log(module);

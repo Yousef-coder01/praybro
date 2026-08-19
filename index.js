@@ -1,6 +1,7 @@
 // Require the necessary discord.js classes
 const fs = require('node:fs');
 const path = require('node:path');
+const {startNotifier} = require('./notifier.js');
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js'); // it's like importing from discord.js it's common js type
 const { token } = process.env.DISCORD_TOKEN
 
@@ -12,6 +13,12 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 // It makes some properties non-nullable.
 client.once(Events.ClientReady, (readyClient) => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	startNotifier(client);  // check immediately
+
+	setInterval(() => {
+    	startNotifier(client); // then every minute
+		}, 60000);
+	
 });
 
 // Log in to Discord with your client's token
