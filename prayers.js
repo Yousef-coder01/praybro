@@ -116,7 +116,7 @@ switch(true){
         return  embed.setTitle('Next Prayer').addFields({name:`🌃 ${prayerTimings[6][0]}`, value:`⏰ ${prayerTimings[6][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0x22047D);;
         break;
     default:
-        return embed.setTitle('Next Prayer').addFields({name:`🌄 ${prayerTimings[0][0]- tommorow}`, value:`⏰ ${prayerTimings[0][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0x37589E);;
+        return embed.setTitle('Next Prayer').addFields({name:`🌄 ${prayerTimings[0][0]} - tommorow`, value:`⏰ ${prayerTimings[0][1]}`}).setFooter({text:`📍 ${city}, ${country}`}).setColor(0x37589E);;
 
 
 }
