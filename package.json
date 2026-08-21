@@ -46,7 +46,7 @@
 
     
 
-  "start": "nodemon --exec \"node --env-file=.env index.js\"",
+  "start": "node index.js",
   
   "connect": "node --env-file=.env db.js\"",
 
