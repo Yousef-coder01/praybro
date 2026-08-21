@@ -1,8 +1,8 @@
-const fs = require('node:fs').promises;
+const pool = require('../../db');
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-	data: new SlashCommandBuilder().setName('setserverlocation').setDescription('set a the server country and city for timings').addStringOption( option => 
+	data: new SlashCommandBuilder().setName('setserverlocation').setDescription('Set a the server country and city for timings').addStringOption( option => 
         option.setName('country').setDescription('name of the country').setRequired(true)
     ).addStringOption( option => 
         option.setName('city').setDescription('name of the city').setRequired(true)
@@ -26,20 +26,15 @@ module.exports = {
       
 
         try{
-           const file = await fs.readFile('./data/servers.json','utf8');
-           const servers = JSON.parse(file);
+      
+           const serverExist = await pool.query(`SELECT server_id FROM servers WHERE server_id = $1 AND channel_id = $2 `,[interaction.guild.id,interaction.channel.id]);
 
-           const serverExist = servers.find(savedServer => savedServer.serverId === server.serverId);
-           const channelExist = servers.find(savedChannel => savedChannel.channelId === server.channelIdId);
-
-           if(serverExist && channelExist){
-            serverExist.city = server.city;
-            serverExist.country = server.country;
+           if(serverExist.rows.length>0){
+            await pool.query(`UPDATE servers SET city = $1 , country = $2 WHERE server_id = $3 AND channel_id = $4`,[server.city,server.country,server.serverId, server.channelId]);
            }else{
-            servers.push(server);
+           await pool.query(`INSERT INTO servers (server_id, city, country, channel_id, notifications)
+            VALUES ($1, $2, $3, $4, $5)`,[server.serverId,server.city,server.country,server.channelId,server.notifications]);
            }
-
-           await fs.writeFile('./data/servers.json',JSON.stringify(servers,null,2));
            await interaction.reply(`Location saved: ${server.city}, ${server.country}`);
 
         }catch(error){
@@ -50,3 +45,4 @@ module.exports = {
 }
 }
 
+           

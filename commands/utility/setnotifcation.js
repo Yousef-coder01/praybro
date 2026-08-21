@@ -1,7 +1,7 @@
-const fs = require('fs/promises');
+const pool = require('../../db');
 const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
-	data: new SlashCommandBuilder().setName('setnotification').setDescription('turn on/off prayer notification')
+	data: new SlashCommandBuilder().setName('setnotification').setDescription('Turn on/off prayer notification')
     .addStringOption(option =>
     option
         .setName('status')
@@ -17,27 +17,24 @@ module.exports = {
         const on = status === 'on';
 
         try{
-        const file = await fs.readFile('./data/servers.json','utf-8');
-        const servers = JSON.parse(file);
+  
+        const serverExist = await pool.query(`SELECT server_id FROM servers WHERE server_id = $1 AND channel_id = $2 `,[interaction.guild.id,interaction.channel.id]);
+        
 
-        const serverExist = servers.find(savedServer => savedServer.serverId === interaction.guild.id);
-
-
-           if(serverExist &&  serverExist.channelId === interaction.channel.id){
-            serverExist.notifications = on;
-
-           await fs.writeFile('./data/servers.json',JSON.stringify(servers,null,2));
-           await interaction.reply(`notfication is ${on?'ON':'OFF'}`);
-          
+           if(serverExist.rows.length>0){
+            await pool.query(`UPDATE servers SET notifications = $1 WHERE server_id = $2 AND channel_id = $3`,[on, interaction.guild.id, interaction.channel.id]);
+            await interaction.reply(`Notifications are ${on ? 'on' : 'off'}`);
            }else{
-            await interaction.reply('server or channel location is not set yet');
-           }
+           await interaction.reply('server or channel location is not set yet')
        
-        }catch(error){
+        }
+        
+    }catch(error){
             console.error(error);
             await interaction.reply('something went wrong');
         }
 
 		
-	},
+	
+}
 };

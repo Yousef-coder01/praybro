@@ -1,19 +1,21 @@
-const fs = require('fs/promises');
+const pool = require('../../db.js');
 const{nextPrayerHandler} = require('../../prayers.js');
 const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
-	data: new SlashCommandBuilder().setName('nextprayer').setDescription('provides next prayer'),
+	data: new SlashCommandBuilder().setName('nextprayer').setDescription('Provides next prayer'),
 	async execute(interaction) {
+
 		const userId = interaction.user.id;
+
 		try{
-		const data = await fs.readFile('./data/users.json','utf-8');
-		const users = JSON.parse(data);
 
-        const user = users.find(user => user.userId === userId);
+	    const user = await pool.query(`SELECT user_id, city, country FROM users WHERE user_id = $1`,[userId]);
+	    const {city , country} = user.rows[0];
 
-		if(user){
-			await interaction.reply({embeds: [await nextPrayerHandler(user.city,user.country)]});
+		if(user.rows.length>0){
+			await interaction.reply({embeds: [await nextPrayerHandler(city,country)]});
+
 		}
 		else{
 			await interaction.reply('User not found. Please set a country and city to get next prayer');
@@ -26,3 +28,5 @@ module.exports = {
 		
 	}
 };
+
+
