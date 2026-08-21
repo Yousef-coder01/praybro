@@ -1,19 +1,19 @@
-const fs = require('node:fs/promises');
+const pool = require('./db');
 const { EmbedBuilder } = require('discord.js');
 const { getPrayerTimes } = require('./prayers.js');
 
 const startNotifier = async (client) => {
     try {
-        const file = await fs.readFile('./data/servers.json', 'utf8');
-        const data = JSON.parse(file);
-
-        for (const server of data) {
+        const data = await pool.query(`SELECT server_id, city, country, channel_id, notifications FROM servers`);
+        const servers = data.rows;
+        
+        for (const server of servers) {
 
             if (!server.notifications) continue;
 
             const city = server.city;
             const country = server.country;
-            const channelId = server.channelId;
+            const channelId = server.channel_id;
 
             const channel = await client.channels.fetch(channelId);
 
