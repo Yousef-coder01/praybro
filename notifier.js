@@ -95,7 +95,7 @@ const startNotifier = async (client) => {
 
             setTimeout(() => {
                 message.delete().catch(console.error);
-            }, 10000);
+            }, 30000);
         }
 
     } catch (error) {
