@@ -86,7 +86,7 @@ const startNotifier = async (client) => {
                 .setTimestamp();
 
             const message = await channel.send({
-    content: '@everyone',
+    content: `@everyone **${prayerName}**\n${prayerDescription}`,
     embeds: [embed],
     allowedMentions: {
         parse: ['everyone']
