@@ -11,10 +11,10 @@ PostgreSQL database for persistent settings
 Supports multiple Discord servers
 Built With
 Node.js
-Discord.js
-PostgreSQL
-Railway
-Commands
+/Discord.js
+/PostgreSQL
+/Railway
+/Commands
 /setlocation
 /nextprayer
 /prayertimes
